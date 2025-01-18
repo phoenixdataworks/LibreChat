@@ -1,7 +1,8 @@
 {
   "name": "LibreChat",
   "version": "v0.7.6",
-  "description": "",
+  "description": "LibreChat Electron App",
+  "main": "electron/main.js",
   "workspaces": [
     "api",
     "client",
@@ -65,7 +66,10 @@
     "b:test:api": "cd api && bun run b:test",
     "b:balance": "bun config/add-balance.js",
     "b:list-balances": "bun config/list-balances.js",
-    "reset-terms": "node config/reset-terms.js"
+    "reset-terms": "node config/reset-terms.js",
+    "electron:dev": "cross-env NODE_ENV=development electron .",
+    "electron:build": "npm run build:data-provider && npm run frontend && electron-builder",
+    "electron:start": "electron ."
   },
   "repository": {
     "type": "git",
@@ -82,7 +86,10 @@
     "@playwright/test": "^1.38.1",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
+    "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
+    "electron": "28.3.3",
+    "electron-builder": "^24.13.3",
     "eslint": "^8.41.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.9.0",
@@ -99,7 +106,40 @@
     "prettier": "^2.8.8",
     "prettier-eslint": "^15.0.1",
     "prettier-eslint-cli": "^7.1.0",
-    "prettier-plugin-tailwindcss": "^0.2.2"
+    "prettier-plugin-tailwindcss": "^0.2.2",
+    "wait-on": "^8.0.2"
+  },
+  "build": {
+    "appId": "com.librechat.app",
+    "productName": "LibreChat",
+    "directories": {
+      "output": "dist_electron"
+    },
+    "files": [
+      "electron/**/*",
+      "client/dist/**/*",
+      "api/**/*",
+      "packages/**/*",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/.bin",
+      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+      "!.editorconfig",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+      "!**/{appveyor.yml,.travis.yml,circle.yml}",
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   },
   "overrides": {
     "mdast-util-gfm-autolink-literal": "2.0.0",
